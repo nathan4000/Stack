@@ -9,7 +9,9 @@ public class TheStack : MonoBehaviour
 	public Color32[] gameColors;
 	public Material stackMat;
 	public GameObject endPanel;
-    public AudioSource Notification2;
+	public AudioSource Séquence;
+    public AudioClip[] audioClipArray;
+    public AudioClip Notification2;
 
 
 
@@ -52,6 +54,7 @@ public class TheStack : MonoBehaviour
 
 	private void Start () 
 	{
+		Séquence = GetComponent<AudioSource>();
         theStack = new GameObject[transform.childCount];
 		startColor = gameColors [0];
 		endColor = gameColors [1];
@@ -89,8 +92,9 @@ public class TheStack : MonoBehaviour
 				SpawnTile ();
 				scoreCount++;
 				scoreText.text = scoreCount.ToString ();
-
-                    
+                Séquence = GetComponent<AudioSource>();
+                Séquence.clip = audioClipArray[Random.Range(0, audioClipArray.Length)];
+                Séquence.PlayOneShot(Séquence.clip);
 
 
 
@@ -114,7 +118,6 @@ public class TheStack : MonoBehaviour
 
 		// Move the stack
 		transform.position = Vector3.Lerp(transform.position,desiredPosition,STACK_MOVING_SPEED * Time.deltaTime);
-		
 	}
 
 	private void MoveTile()
@@ -122,9 +125,7 @@ public class TheStack : MonoBehaviour
 		tileTransition += Time.deltaTime * tileSpeed;
 		if(isMovingOnX)
 			theStack [stackIndex].transform.localPosition = new Vector3 (Mathf.Sin (tileTransition) * BOUNDS_SIZE, scoreCount, secondaryPosition);
-		
-		
-        else
+		else
 			theStack [stackIndex].transform.localPosition = new Vector3 (secondaryPosition, scoreCount, Mathf.Sin (tileTransition) * BOUNDS_SIZE);
 	}
 
@@ -141,9 +142,6 @@ public class TheStack : MonoBehaviour
 		theStack [stackIndex].transform.localScale = new Vector3(stackBounds.x,1,stackBounds.y);
 
 		ColorMesh(theStack [stackIndex].GetComponent<MeshFilter> ().mesh);
-
-		
-
 
 	}
 
@@ -207,20 +205,17 @@ public class TheStack : MonoBehaviour
 		{
 			float deltaZ = lastTilePosition.z - t.position.z;
 			if (Mathf.Abs (deltaZ) > ERROR_MARGIN)
-				
 			{
 				// Put something in the clips array before un-commenting this line
 
 
 				// CUT THE TILE
+			
 
-				
                 combo = 0;
 				stackBounds.y -= Mathf.Abs (deltaZ);
 				if (stackBounds.y <= 0)
 					return false;
-				Notification2 = GetComponent<AudioSource>();
-				Notification2.Play();
 
 				float middle = lastTilePosition.z + t.localPosition.z / 2;
 				t.localScale = new Vector3(stackBounds.x,1,stackBounds.y);
@@ -232,22 +227,14 @@ public class TheStack : MonoBehaviour
 						? t.position.z + (t.localScale.z / 2)
 						: t.position.z - (t.localScale.z / 2)),
 					new Vector3 (t.localScale.x, 1, Mathf.Abs (deltaZ))
-
 				);
-				
 				t.localPosition = new Vector3 (lastTilePosition.x, scoreCount,middle - (lastTilePosition.z / 2));
-				
-
 			}
 			else 
 			{
-				// Put something in the clips array before un-commenting this line
+                // Put something in the clips array before un-commenting this line
 				// AudioSource.PlayClipAtPoint (clips [1], Camera.main.transform.position);
-				Notification2 = GetComponent<AudioSource>();
-				Notification2.Play();
-
-                if (combo > COMBO_START_GAIN)
-					
+				if (combo > COMBO_START_GAIN) 
 				{
 					if (stackBounds.y > BOUNDS_SIZE)
 						stackBounds.y = BOUNDS_SIZE;
