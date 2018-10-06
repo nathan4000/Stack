@@ -25,7 +25,6 @@ public class TheStack : MonoBehaviour
 	private const float ERROR_MARGIN = 0.25f;
 	private const float STACK_BOUNDS_GAIN = 0.25f;
 	private const int COMBO_START_GAIN = 3;
-    private AudioSource Combo;
 
 
 	private GameObject[] theStack;
@@ -56,7 +55,6 @@ public class TheStack : MonoBehaviour
 	private void Start () 
 	{
 		Séquence = GetComponent<AudioSource>();
-        Combo = GetComponent<AudioSource>();
         theStack = new GameObject[transform.childCount];
 		startColor = gameColors [0];
 		endColor = gameColors [1];
@@ -144,7 +142,7 @@ public class TheStack : MonoBehaviour
 		theStack [stackIndex].transform.localScale = new Vector3(stackBounds.x,1,stackBounds.y);
 
 		ColorMesh(theStack [stackIndex].GetComponent<MeshFilter> ().mesh);
-        Combo.Play();
+
 	}
 
 	private bool PlaceTile()
